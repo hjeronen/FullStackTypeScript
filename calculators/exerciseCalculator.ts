@@ -1,3 +1,5 @@
+import { parseArguments } from './utils';
+
 type Rating = 1 | 2 | 3;
 type RatingDescription = 'Bad' | 'OK' | 'Good';
 
@@ -19,7 +21,7 @@ const calculateExercises = (exercises: number[], target: number): Result => {
   const success: boolean = average >= target;
 
   const difference: number = average - target;
-  const threshold = target * 0.1;
+  const threshold = target * 0.2;
   let rating: Rating;
   if (difference >= threshold) {
     rating = 3;
@@ -55,6 +57,17 @@ const calculateExercises = (exercises: number[], target: number): Result => {
   };
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2)); // OK
-console.log(calculateExercises([3, 2, 2, 4.5, 2, 3, 1], 2)); // Good
-console.log(calculateExercises([1, 0, 2, 1, 0, 3, 1], 2)); // Bad
+// console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2)); // OK
+// console.log(calculateExercises([3, 2, 2, 4.5, 2, 3, 1], 2)); // Good
+// console.log(calculateExercises([1, 0, 2, 1, 0, 3, 1], 2)); // Bad
+
+try {
+  const [target, ...exercises] = parseArguments(process.argv);
+  console.log(calculateExercises(exercises, target));
+} catch (error: unknown) {
+  if (error instanceof Error) {
+    console.log(`Error: ${error.message}`);
+  } else {
+    console.log(`Something went wrong: ${error}`);
+  }
+}

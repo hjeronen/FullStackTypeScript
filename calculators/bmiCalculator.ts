@@ -1,3 +1,5 @@
+import { parseArguments } from './utils';
+
 type Cm = number;
 type Kg = number;
 
@@ -25,7 +27,21 @@ const calculateBmi = (height: Cm, weight: Kg): string => {
   }
 };
 
-console.log(calculateBmi(180, 40)); // Underweight (severe thinness)
-console.log(calculateBmi(180, 74)); // Normal (healthy weight)
-console.log(calculateBmi(180, 90)); // Overweight (pre-obese)
-console.log(calculateBmi(180, 120)); // Obese (class II)
+// console.log(calculateBmi(180, 40)); // Underweight (severe thinness)
+// console.log(calculateBmi(180, 74)); // Normal (healthy weight)
+// console.log(calculateBmi(180, 90)); // Overweight (pre-obese)
+// console.log(calculateBmi(180, 120)); // Obese (class II)
+
+try {
+  const [height, weight, ...others] = parseArguments(process.argv);
+  if (others.length > 0) {
+    throw new Error('This function only accepts two arguments.');
+  }
+  console.log(calculateBmi(height, weight));
+} catch (error: unknown) {
+  if (error instanceof Error) {
+    console.log(`Error: ${error.message}`);
+  } else {
+    console.log(`Something went wrong: ${error}`);
+  }
+}

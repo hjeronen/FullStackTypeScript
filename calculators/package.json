@@ -12,6 +12,7 @@
   "author": "Heli Eronen",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^20.12.8",
     "prettier": "3.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
