@@ -1,5 +1,3 @@
-import { parseArguments } from './utils';
-
 type Rating = 1 | 2 | 3;
 type RatingDescription = 'Bad' | 'OK' | 'Good';
 
@@ -13,7 +11,10 @@ interface Result {
   average: number;
 }
 
-const calculateExercises = (exercises: number[], target: number): Result => {
+export const calculateExercises = (
+  exercises: number[],
+  target: number
+): Result => {
   const periodLength: number = exercises.length;
   const trainingDays: number = exercises.filter((value) => value > 0).length;
   const average: number =
@@ -60,14 +61,3 @@ const calculateExercises = (exercises: number[], target: number): Result => {
 // console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2)); // OK
 // console.log(calculateExercises([3, 2, 2, 4.5, 2, 3, 1], 2)); // Good
 // console.log(calculateExercises([1, 0, 2, 1, 0, 3, 1], 2)); // Bad
-
-try {
-  const [target, ...exercises] = parseArguments(process.argv);
-  console.log(calculateExercises(exercises, target));
-} catch (error: unknown) {
-  if (error instanceof Error) {
-    console.log(`Error: ${error.message}`);
-  } else {
-    console.log(`Something went wrong: ${error}`);
-  }
-}

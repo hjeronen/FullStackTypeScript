@@ -13,3 +13,31 @@ export const parseArguments = (args: string[]): number[] => {
 
   return result;
 };
+
+export const parseValues = (values: string[]): number[] => {
+  if (!values || values.length === 0) {
+    throw new Error('missing parameters');
+  }
+
+  if (!(values instanceof Array)) {
+    throw new Error('malformatted parameters');
+  }
+
+  const result: number[] = [];
+  values.forEach((value) => {
+    result.push(parseValue(value));
+  });
+  return result;
+};
+
+export const parseValue = (value: string): number => {
+  if (value === undefined) {
+    throw new Error('missing parameters');
+  }
+
+  if (isNaN(Number(value))) {
+    throw new Error('malformatted parameters');
+  }
+
+  return Number(value);
+};
