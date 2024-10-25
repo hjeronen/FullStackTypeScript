@@ -1,10 +1,8 @@
-export interface Part {
-  name: string;
-  exerciseCount: number;
-}
+import { CoursePart } from "../App";
+import Part from "./Part";
 
 interface ContentProps {
-  parts: Part[];
+  parts: CoursePart[];
 }
 
 const Content = ({ parts }: ContentProps) => {
@@ -12,9 +10,9 @@ const Content = ({ parts }: ContentProps) => {
     <div>
       {parts &&
         parts.map((part) => (
-          <p key={part.name}>
-            {part.name} {part.exerciseCount}
-          </p>
+          <div key={part.name}>
+            <Part coursePart={part} />
+          </div>
         ))}
     </div>
   );
