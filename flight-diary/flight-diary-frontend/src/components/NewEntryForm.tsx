@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NewDiaryEntry, Visibility, Weather } from "../types";
 import ErrorNotification from "./ErrorNotification";
+import React from "react";
 
 interface NewEntryFormProps {
   addNewEntry: (newEntry: NewDiaryEntry) => Promise<boolean>;
@@ -51,21 +52,42 @@ const NewEntryForm = ({ addNewEntry, message }: NewEntryFormProps) => {
       <ErrorNotification message={message} />
       <div>
         <label>date</label>
-        <input value={date} onChange={(event) => setDate(event.target.value)} />
+        <input
+          type='date'
+          value={date}
+          onChange={(event) => setDate(event.target.value)}
+        />
       </div>
       <div>
         <label>visibility</label>
-        <input
-          value={visibility}
-          onChange={(event) => setVisibility(event.target.value)}
-        />
+        {Object.values(Visibility).map((value) => (
+          <React.Fragment key={value}>
+            <input
+              key={value}
+              type='radio'
+              name='visibility'
+              value={value}
+              checked={value === visibility}
+              onChange={() => setVisibility(value)}
+            />
+            <label key={`${value}-label`}>{value}</label>
+          </React.Fragment>
+        ))}
       </div>
       <div>
         <label>weather</label>
-        <input
-          value={weather}
-          onChange={(event) => setWeather(event.target.value)}
-        />
+        {Object.values(Weather).map((value) => (
+          <React.Fragment key={value}>
+            <input
+              type='radio'
+              name='weather'
+              value={value}
+              checked={value === weather}
+              onChange={() => setWeather(value)}
+            />
+            <label>{value}</label>
+          </React.Fragment>
+        ))}
       </div>
       <div>
         <label>comment</label>

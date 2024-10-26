@@ -9,9 +9,6 @@ export const getDiaryEntries = async () => {
 };
 
 export const createNewEntry = async (newEntry: NewDiaryEntry) => {
-  console.log("posting new entry");
-  console.log(newEntry);
   const response = await axios.post<DiaryEntry>(baseUrl, newEntry);
-  console.log(response);
   return response.data;
 };
