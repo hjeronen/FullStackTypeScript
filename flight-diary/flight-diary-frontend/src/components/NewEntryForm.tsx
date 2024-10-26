@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { NewDiaryEntry, Visibility, Weather } from "../types";
+import ErrorNotification from "./ErrorNotification";
 
 interface NewEntryFormProps {
   addNewEntry: (newEntry: NewDiaryEntry) => Promise<boolean>;
+  message: string;
 }
 
-const NewEntryForm = ({ addNewEntry }: NewEntryFormProps) => {
+const NewEntryForm = ({ addNewEntry, message }: NewEntryFormProps) => {
   const [date, setDate] = useState<string>("");
   const [visibility, setVisibility] = useState<string>("");
   const [weather, setWeather] = useState<string>("");
@@ -46,6 +48,7 @@ const NewEntryForm = ({ addNewEntry }: NewEntryFormProps) => {
   return (
     <form onSubmit={submit}>
       <h2>Add new entry</h2>
+      <ErrorNotification message={message} />
       <div>
         <label>date</label>
         <input value={date} onChange={(event) => setDate(event.target.value)} />
