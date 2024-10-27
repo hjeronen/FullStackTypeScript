@@ -36,6 +36,15 @@ router.get('/', (_req, res) => {
   res.send(patientService.getPatients());
 });
 
+router.get('/:id', (req, res) => {
+  const patient = patientService.getPatient(req.params.id);
+  if (patient) {
+    res.json(patient);
+  } else {
+    res.status(404).send({ error: 'Patient data not found' });
+  }
+});
+
 router.post(
   '/',
   newPatientParser,
