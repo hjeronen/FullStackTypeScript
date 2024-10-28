@@ -4,6 +4,7 @@ import { useMatch } from "react-router-dom";
 import { Female, Male, Transgender } from "@mui/icons-material";
 import axios from "axios";
 import patientService from "../../services/patients";
+import Entries from "./Entries";
 
 const PatientPage = () => {
   const [patient, setPatient] = useState<Patient | undefined>(undefined);
@@ -47,6 +48,7 @@ const PatientPage = () => {
       </h1>
       <div>ssn: {patient.ssn}</div>
       <div>occupation: {patient.occupation}</div>
+      <Entries entries={patient.entries} />
     </div>
   ) : (
     <div>{error ?? "No patient data available."}</div>
