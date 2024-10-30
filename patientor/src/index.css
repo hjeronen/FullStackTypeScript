@@ -3,9 +3,9 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light;
+  background-color: rgba(255, 255, 255, 0.87);
+  color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -53,6 +53,13 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.entry {
+  border-style: solid;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 10px;
 }
 
 @media (prefers-color-scheme: light) {
