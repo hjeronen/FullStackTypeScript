@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Gender, NewPatient } from './types';
+import { Gender, HealthCheckRating, NewEntry, NewPatient } from './types';
 
 export const NewPatientSchema = z.object({
   name: z.string(),
@@ -9,6 +9,47 @@ export const NewPatientSchema = z.object({
   occupation: z.string(),
 });
 
-export const toNewPatient = (object: unknown): NewPatient => {
+export const parseNewPatient = (object: unknown): NewPatient => {
   return NewPatientSchema.parse(object);
+};
+
+const NewBaseEntrySchema = z.object({
+  type: z.string(),
+  description: z.string(),
+  date: z.string(),
+  specialist: z.string(),
+  diagnosisCodes: z.array(z.string()).optional(),
+});
+
+export const NewHealthCheckEntrySchema = NewBaseEntrySchema.extend({
+  type: z.literal('HealthCheck'),
+  healthCheckRating: z.nativeEnum(HealthCheckRating),
+});
+
+const DischargeSchema = z.object({
+  date: z.string(),
+  criteria: z.string(),
+});
+
+export const NewHospitalEntrySchema = NewBaseEntrySchema.extend({
+  type: z.literal('Hospital'),
+  discharge: DischargeSchema,
+});
+
+export const NewOccupationalHealthcareEntrySchema = NewBaseEntrySchema.extend({
+  type: z.literal('OccupationalHealthcare'),
+  employerName: z.string(),
+});
+
+export const parseNewEntry = (entry: NewEntry) => {
+  switch (entry.type) {
+    case 'HealthCheck':
+      return NewHealthCheckEntrySchema.parse(entry);
+    case 'Hospital':
+      return NewHospitalEntrySchema.parse(entry);
+    case 'OccupationalHealthcare':
+      return NewOccupationalHealthcareEntrySchema.parse(entry);
+    default:
+      throw new Error('Unkown entry type');
+  }
 };

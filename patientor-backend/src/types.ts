@@ -1,5 +1,10 @@
 import { z } from 'zod';
-import { NewPatientSchema } from './utils';
+import {
+  NewHealthCheckEntrySchema,
+  NewHospitalEntrySchema,
+  NewOccupationalHealthcareEntrySchema,
+  NewPatientSchema,
+} from './utils';
 
 export interface Diagnosis {
   code: string;
@@ -13,11 +18,11 @@ export enum Gender {
   Other = 'other',
 }
 
-type Type = 'HealthCheck' | 'Hospital' | 'OccupationalHealthcare';
+type EntryType = 'HealthCheck' | 'Hospital' | 'OccupationalHealthcare';
 
 interface BaseEntry {
   id: string;
-  type: Type;
+  type: EntryType;
   description: string;
   date: string;
   specialist: string;
@@ -75,3 +80,8 @@ export interface Patient {
 export type NonSensitivePatientInfo = Omit<Patient, 'ssn' | 'entries'>;
 
 export type NewPatient = z.infer<typeof NewPatientSchema>;
+
+export type NewEntry =
+  | z.infer<typeof NewHealthCheckEntrySchema>
+  | z.infer<typeof NewHospitalEntrySchema>
+  | z.infer<typeof NewOccupationalHealthcareEntrySchema>;
