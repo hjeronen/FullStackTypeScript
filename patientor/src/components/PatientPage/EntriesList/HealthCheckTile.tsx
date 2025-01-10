@@ -1,6 +1,6 @@
 import { HealthCheckEntry, HealthCheckRating } from "../../../types";
 import { Favorite, MedicalServices } from "@mui/icons-material";
-import { assertNever } from "./utils";
+import { assertNever } from "../../common/utils";
 
 interface HealthCheckTileProps {
   entry: HealthCheckEntry;

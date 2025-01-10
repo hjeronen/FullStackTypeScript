@@ -36,9 +36,15 @@ export const NewHospitalEntrySchema = NewBaseEntrySchema.extend({
   discharge: DischargeSchema,
 });
 
+const SickLeaveSchema = z.object({
+  startDate: z.string(),
+  endDate: z.string(),
+});
+
 export const NewOccupationalHealthcareEntrySchema = NewBaseEntrySchema.extend({
   type: z.literal('OccupationalHealthcare'),
   employerName: z.string(),
+  sickLeave: SickLeaveSchema.optional(),
 });
 
 export const parseNewEntry = (entry: NewEntry) => {

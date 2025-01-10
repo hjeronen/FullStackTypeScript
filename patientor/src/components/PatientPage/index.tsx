@@ -86,8 +86,8 @@ const PatientPage = () => {
       <h2>
         {patient.name} {getGenderIcon()}
       </h2>
-      <div>ssn: {patient.ssn}</div>
-      <div>occupation: {patient.occupation}</div>
+      <div>Ssn: {patient.ssn}</div>
+      <div>Occupation: {patient.occupation}</div>
       <ErrorNotification error={error} />
       <EntryForm onSubmit={addEntry} />
       <EntriesList entries={patient.entries} />

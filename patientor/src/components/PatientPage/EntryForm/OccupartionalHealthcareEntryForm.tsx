@@ -1,42 +1,48 @@
 import TextField from "@mui/material/TextField";
 import { forwardRef, useImperativeHandle, useState } from "react";
-import type { NewEntry } from "../../../types";
+import type { NewEntry, SickLeave } from "../../../types";
 import { parseDiagnosisCodes } from "./utils";
 import type { EntryFormRef } from ".";
 
-interface HealthCheckEntryFormProps {}
+interface OccupationalHealthcareEntryFormProps {}
 
-const HealthcheckEntryForm = forwardRef<
+const OccupationalHealthcareEntryForm = forwardRef<
   EntryFormRef,
-  HealthCheckEntryFormProps
+  OccupationalHealthcareEntryFormProps
 >((_props, ref) => {
   const [description, setDescription] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [specialist, setSpecialist] = useState<string>("");
-  const [healthCheckRating, setHealthCheckRating] = useState<string>("");
+  const [employerName, setEmployerName] = useState<string>("");
+  const [sickLeaveStartDate, setSickLeaveStartDate] = useState<string>("");
+  const [sickLeaveEndDate, setSickLeaveEndDate] = useState<string>("");
   const [diagnosisCodes, setDiagnosisCodes] = useState<string>("");
 
   const createNewEntry = (): NewEntry => {
     return {
-      type: "HealthCheck",
+      type: "OccupationalHealthcare",
       description,
       date,
       specialist,
-      healthCheckRating: stringToNumber(healthCheckRating) as any, // TODO: input checking and type assertion
+      employerName,
+      sickLeave: parseSickLeave(),
       diagnosisCodes: parseDiagnosisCodes(diagnosisCodes),
     };
   };
 
-  const stringToNumber = (value: string): number | undefined => {
-    if (!value || isNaN(Number(value))) return undefined;
-    return Number(value);
+  const parseSickLeave = (): SickLeave | undefined => {
+    if (sickLeaveStartDate && sickLeaveEndDate)
+      return { startDate: sickLeaveStartDate, endDate: sickLeaveEndDate };
+    return undefined;
   };
 
   const resetFields = (): void => {
     setDescription("");
     setDate("");
     setSpecialist("");
-    setHealthCheckRating("");
+    setEmployerName("");
+    setSickLeaveStartDate("");
+    setSickLeaveEndDate("");
     setDiagnosisCodes("");
   };
 
@@ -49,7 +55,7 @@ const HealthcheckEntryForm = forwardRef<
 
   return (
     <div>
-      <h3>New Health Check Entry</h3>
+      <h3>New Occupational Healthcare Entry</h3>
       <TextField
         label='Description'
         fullWidth
@@ -72,11 +78,23 @@ const HealthcheckEntryForm = forwardRef<
         onChange={({ target }) => setSpecialist(target.value)}
       />
       <TextField
-        label='Healthcheck rating'
+        label='Employer name'
         fullWidth
         required
-        value={healthCheckRating}
-        onChange={({ target }) => setHealthCheckRating(target.value)}
+        value={employerName}
+        onChange={({ target }) => setEmployerName(target.value)}
+      />
+      <TextField
+        label='Sick leave start date'
+        fullWidth
+        value={sickLeaveStartDate}
+        onChange={({ target }) => setSickLeaveStartDate(target.value)}
+      />
+      <TextField
+        label='Sick leave end date'
+        fullWidth
+        value={sickLeaveEndDate}
+        onChange={({ target }) => setSickLeaveEndDate(target.value)}
       />
       <TextField
         label='Diagnosis codes'
@@ -88,4 +106,4 @@ const HealthcheckEntryForm = forwardRef<
   );
 });
 
-export default HealthcheckEntryForm;
+export default OccupationalHealthcareEntryForm;

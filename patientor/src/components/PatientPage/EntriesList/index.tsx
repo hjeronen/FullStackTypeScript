@@ -4,7 +4,8 @@ import diagnosesService from "../../../services/diagnoses";
 import HospitalEntryTile from "./HospitalEntryTile";
 import OccupationalHealthcareTile from "./OccupationalHealthcareTile";
 import HealthCheckTile from "./HealthCheckTile";
-import { assertNever, getDiagnosisName } from "./utils";
+import { getDiagnosisName } from "./utils";
+import { assertNever } from "../../common/utils";
 
 interface EntriesProps {
   entries: Entry[];
@@ -28,7 +29,9 @@ const Diagnoses: React.FC<{ entry: Entry; diagnoses: Array<Diagnosis> }> = ({
   diagnoses,
 }) => (
   <>
-    {entry.diagnosisCodes && entry.diagnosisCodes.length === 0 ? null : (
+    {entry.diagnosisCodes && entry.diagnosisCodes.length === 0 ? (
+      <br />
+    ) : (
       <div>
         <h4>Diagnoses:</h4>
         <ul>
