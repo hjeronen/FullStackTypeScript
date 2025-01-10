@@ -2,11 +2,24 @@ import express, { Request, Response, NextFunction } from 'express';
 import patientService from '../services/patientService';
 import { z } from 'zod';
 import { parseNewEntry, parseNewPatient } from '../utils';
-import { NewEntry, NewPatient, Patient } from '../types';
+import type { NewEntry, NewPatient, Patient } from '../types';
 
 const router = express.Router();
 
-const newPatientParser = (req: Request, _res: Response, next: NextFunction) => {
+interface NewPatientRequest extends Request {
+  body: NewPatient;
+}
+
+interface NewEntryRequest extends Request {
+  params: { id: string };
+  body: NewEntry;
+}
+
+const newPatientParser = (
+  req: NewPatientRequest,
+  _res: Response,
+  next: NextFunction
+) => {
   try {
     parseNewPatient(req.body);
     next();
@@ -15,7 +28,11 @@ const newPatientParser = (req: Request, _res: Response, next: NextFunction) => {
   }
 };
 
-const newEntryParser = (req: Request, _res: Response, next: NextFunction) => {
+const newEntryParser = (
+  req: NewEntryRequest,
+  _res: Response,
+  next: NextFunction
+) => {
   try {
     parseNewEntry(req.body);
     next();
@@ -53,7 +70,7 @@ router.get('/:id', (req: Request, res: Response) => {
 router.post(
   '/',
   newPatientParser,
-  (req: Request<unknown, unknown, NewPatient>, res: Response<Patient>) => {
+  (req: NewPatientRequest, res: Response<Patient>) => {
     const addedPatient = patientService.addPatient(req.body);
     res.json(addedPatient);
   }
@@ -62,7 +79,7 @@ router.post(
 router.post(
   '/:id/entries',
   newEntryParser,
-  (req: Request<{ id: string }, unknown, NewEntry>, res: Response<Patient>) => {
+  (req: NewEntryRequest, res: Response<Patient>) => {
     const modifiedPatient = patientService.addEntry(req.params.id, req.body);
     res.json(modifiedPatient);
   }

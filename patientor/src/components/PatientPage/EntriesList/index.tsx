@@ -28,14 +28,18 @@ const Diagnoses: React.FC<{ entry: Entry; diagnoses: Array<Diagnosis> }> = ({
   diagnoses,
 }) => (
   <>
-    <h4>Diagnoses:</h4>
-    <ul>
-      {entry.diagnosisCodes?.map((code) => (
-        <li key={code}>
-          {code} {getDiagnosisName(code, diagnoses)}
-        </li>
-      ))}
-    </ul>
+    {entry.diagnosisCodes && entry.diagnosisCodes.length === 0 ? null : (
+      <div>
+        <h4>Diagnoses:</h4>
+        <ul>
+          {entry.diagnosisCodes?.map((code) => (
+            <li key={code}>
+              {code} {getDiagnosisName(code, diagnoses)}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
   </>
 );
 
@@ -58,7 +62,7 @@ const EntriesList = ({ entries }: EntriesProps) => {
           {entry.diagnosisCodes && (
             <Diagnoses entry={entry} diagnoses={diagnoses} />
           )}
-          <div>diagnose by {entry.specialist}</div>
+          <div>Diagnose by {entry.specialist}</div>
         </div>
       ))}
     </div>

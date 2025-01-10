@@ -50,6 +50,6 @@ export const parseNewEntry = (entry: NewEntry) => {
     case 'OccupationalHealthcare':
       return NewOccupationalHealthcareEntrySchema.parse(entry);
     default:
-      throw new Error('Unkown entry type');
+      throw new Error('Unknown entry type');
   }
 };

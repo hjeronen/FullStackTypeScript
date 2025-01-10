@@ -70,3 +70,16 @@ export interface Patient {
 }
 
 export type PatientFormValues = Omit<Patient, "id" | "entries">;
+
+export type NewEntry =
+  | Omit<HealthCheckEntry, "id">
+  | Omit<HospitalEntry, "id">
+  | Omit<OccupationalHealthcareEntry, "id">;
+
+export interface ZodErrorObject {
+  code: string;
+  expected: string;
+  received: string;
+  path: string[];
+  message: string;
+}
