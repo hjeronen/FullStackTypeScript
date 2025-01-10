@@ -1,20 +1,19 @@
 import { Button, Grid } from "@mui/material";
 import { NewEntry } from "../../../types";
 import HealthcheckEntryForm from "./HealthcheckEntryForm";
-import { MutableRefObject, SyntheticEvent, useRef } from "react";
+import { RefObject, SyntheticEvent, useRef } from "react";
 
 interface EntryFormProps {
   onSubmit: (entry: NewEntry) => Promise<boolean>;
 }
 
-export interface EntryFormRef extends MutableRefObject<unknown> {
+export interface EntryFormRef {
   createNewEntry: () => NewEntry;
   resetFields: () => void;
 }
 
 const EntryForm = ({ onSubmit }: EntryFormProps) => {
-  const entryFormRef: MutableRefObject<EntryFormRef | undefined> =
-    useRef<EntryFormRef>();
+  const entryFormRef: RefObject<EntryFormRef> = useRef<EntryFormRef>(null);
 
   const addEntry = async (event: SyntheticEvent) => {
     event.preventDefault();
