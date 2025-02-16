@@ -1,22 +1,33 @@
-import TextField from "@mui/material/TextField";
 import { forwardRef, useImperativeHandle, useState } from "react";
-import type { NewEntry, SickLeave } from "../../../types";
-import { parseDiagnosisCodes } from "./utils";
+import type { Diagnosis, NewEntry, SickLeave } from "../../../types";
 import type { EntryFormRef } from ".";
+import DateInput from "./DateInput";
+import FormLabel from "@mui/material/FormLabel";
+import TextInput from "./TextInput";
+import DiagnosisCodesSelect from "./DiagnosisCodesSelect";
 
-interface OccupationalHealthcareEntryFormProps {}
+interface OccupationalHealthcareEntryFormProps {
+  diagnosisCodesData: Diagnosis[];
+}
 
 const OccupationalHealthcareEntryForm = forwardRef<
   EntryFormRef,
   OccupationalHealthcareEntryFormProps
->((_props, ref) => {
+>(({ diagnosisCodesData }, ref) => {
   const [description, setDescription] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [specialist, setSpecialist] = useState<string>("");
   const [employerName, setEmployerName] = useState<string>("");
   const [sickLeaveStartDate, setSickLeaveStartDate] = useState<string>("");
   const [sickLeaveEndDate, setSickLeaveEndDate] = useState<string>("");
-  const [diagnosisCodes, setDiagnosisCodes] = useState<string>("");
+  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
+
+  const validate = () => {
+    if (description && date && specialist && employerName) {
+      return true;
+    }
+    return false;
+  };
 
   const createNewEntry = (): NewEntry => {
     return {
@@ -26,7 +37,7 @@ const OccupationalHealthcareEntryForm = forwardRef<
       specialist,
       employerName,
       sickLeave: parseSickLeave(),
-      diagnosisCodes: parseDiagnosisCodes(diagnosisCodes),
+      diagnosisCodes: diagnosisCodes,
     };
   };
 
@@ -43,64 +54,54 @@ const OccupationalHealthcareEntryForm = forwardRef<
     setEmployerName("");
     setSickLeaveStartDate("");
     setSickLeaveEndDate("");
-    setDiagnosisCodes("");
+    setDiagnosisCodes([]);
   };
 
   useImperativeHandle(ref, () => {
     return {
+      validate,
       createNewEntry,
       resetFields,
     };
   });
 
   return (
-    <div>
+    <div className='form-body'>
       <h3>New Occupational Healthcare Entry</h3>
-      <TextField
+      <TextInput
         label='Description'
-        fullWidth
         required
         value={description}
-        onChange={({ target }) => setDescription(target.value)}
+        onChange={setDescription}
       />
-      <TextField
-        label='Date'
-        fullWidth
-        required
-        value={date}
-        onChange={({ target }) => setDate(target.value)}
-      />
-      <TextField
+      <DateInput label='Date' required value={date} onChange={setDate} />
+      <TextInput
         label='Specialist'
-        fullWidth
         required
         value={specialist}
-        onChange={({ target }) => setSpecialist(target.value)}
+        onChange={setSpecialist}
       />
-      <TextField
+      <TextInput
         label='Employer name'
-        fullWidth
         required
         value={employerName}
-        onChange={({ target }) => setEmployerName(target.value)}
+        onChange={setEmployerName}
       />
-      <TextField
-        label='Sick leave start date'
-        fullWidth
+      <FormLabel style={{ margin: "10px" }}>Sick leave</FormLabel>
+      <DateInput
+        label='Start date'
         value={sickLeaveStartDate}
-        onChange={({ target }) => setSickLeaveStartDate(target.value)}
+        onChange={setSickLeaveStartDate}
       />
-      <TextField
-        label='Sick leave end date'
-        fullWidth
+      <DateInput
+        label='End date'
         value={sickLeaveEndDate}
-        onChange={({ target }) => setSickLeaveEndDate(target.value)}
+        onChange={setSickLeaveEndDate}
       />
-      <TextField
-        label='Diagnosis codes'
-        fullWidth
+      <DiagnosisCodesSelect
+        diagnosisCodesData={diagnosisCodesData}
         value={diagnosisCodes}
-        onChange={({ target }) => setDiagnosisCodes(target.value)}
+        onChange={setDiagnosisCodes}
       />
     </div>
   );

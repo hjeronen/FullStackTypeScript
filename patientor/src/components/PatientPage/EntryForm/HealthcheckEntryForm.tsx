@@ -1,20 +1,33 @@
-import TextField from "@mui/material/TextField";
 import { forwardRef, useImperativeHandle, useState } from "react";
-import type { NewEntry } from "../../../types";
-import { parseDiagnosisCodes } from "./utils";
+import type { Diagnosis, NewEntry } from "../../../types";
 import type { EntryFormRef } from ".";
+import DateInput from "./DateInput";
+import TextInput from "./TextInput";
+import DiagnosisCodesSelect from "./DiagnosisCodesSelect";
+import HealthRatingRadioGroup from "./HealthRatingRadioGroup";
 
-interface HealthCheckEntryFormProps {}
+interface HealthCheckEntryFormProps {
+  diagnosisCodesData: Diagnosis[];
+}
 
 const HealthcheckEntryForm = forwardRef<
   EntryFormRef,
   HealthCheckEntryFormProps
->((_props, ref) => {
+>(({ diagnosisCodesData }, ref) => {
   const [description, setDescription] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [specialist, setSpecialist] = useState<string>("");
   const [healthCheckRating, setHealthCheckRating] = useState<string>("");
-  const [diagnosisCodes, setDiagnosisCodes] = useState<string>("");
+  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
+  const [healthCheckRatingError, setHealthCheckRatingError] =
+    useState<boolean>(false);
+
+  const validate = () => {
+    if (description && date && specialist && checkHealthCheckRating()) {
+      return true;
+    }
+    return false;
+  };
 
   const createNewEntry = (): NewEntry => {
     return {
@@ -22,13 +35,22 @@ const HealthcheckEntryForm = forwardRef<
       description,
       date,
       specialist,
-      healthCheckRating: stringToNumber(healthCheckRating) as any, // TODO: input checking and type assertion
-      diagnosisCodes: parseDiagnosisCodes(diagnosisCodes),
+      healthCheckRating: stringToNumber(healthCheckRating),
+      diagnosisCodes: diagnosisCodes,
     };
   };
 
-  const stringToNumber = (value: string): number | undefined => {
-    if (!value || isNaN(Number(value))) return undefined;
+  const checkHealthCheckRating = (): boolean => {
+    if (healthCheckRating === "") {
+      setHealthCheckRatingError(true);
+      return false;
+    }
+    return true;
+  };
+
+  const stringToNumber = (value: string): number => {
+    if (!value || isNaN(Number(value)))
+      throw new Error("Health rating is not a number.");
     return Number(value);
   };
 
@@ -37,52 +59,43 @@ const HealthcheckEntryForm = forwardRef<
     setDate("");
     setSpecialist("");
     setHealthCheckRating("");
-    setDiagnosisCodes("");
+    setDiagnosisCodes([]);
   };
 
   useImperativeHandle(ref, () => {
     return {
+      validate,
       createNewEntry,
       resetFields,
     };
   });
 
   return (
-    <div>
+    <div className='form-body'>
       <h3>New Health Check Entry</h3>
-      <TextField
+      <TextInput
         label='Description'
-        fullWidth
         required
         value={description}
-        onChange={({ target }) => setDescription(target.value)}
+        onChange={setDescription}
       />
-      <TextField
-        label='Date'
-        fullWidth
-        required
-        value={date}
-        onChange={({ target }) => setDate(target.value)}
-      />
-      <TextField
+      <DateInput label='Date' required value={date} onChange={setDate} />
+      <TextInput
         label='Specialist'
-        fullWidth
         required
         value={specialist}
-        onChange={({ target }) => setSpecialist(target.value)}
+        onChange={setSpecialist}
       />
-      <TextField
-        label='Healthcheck rating'
-        fullWidth
-        required
+      <HealthRatingRadioGroup
         value={healthCheckRating}
-        onChange={({ target }) => setHealthCheckRating(target.value)}
+        error={healthCheckRatingError}
+        onChange={setHealthCheckRating}
+        setError={setHealthCheckRatingError}
       />
-      <TextField
-        label='Diagnosis codes'
-        fullWidth
+      <DiagnosisCodesSelect
+        diagnosisCodesData={diagnosisCodesData}
         value={diagnosisCodes}
-        onChange={({ target }) => setDiagnosisCodes(target.value)}
+        onChange={setDiagnosisCodes}
       />
     </div>
   );

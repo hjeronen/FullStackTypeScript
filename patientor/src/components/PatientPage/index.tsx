@@ -4,10 +4,12 @@ import {
   type ZodErrorObject,
   type NewEntry,
   type Patient,
+  type Diagnosis,
 } from "../../types";
 import { useMatch } from "react-router-dom";
 import { Female, Male, Transgender } from "@mui/icons-material";
 import axios from "axios";
+import diagnosesService from "../../services/diagnoses";
 import patientService from "../../services/patients";
 import EntriesList from "./EntriesList";
 import EntryForm from "./EntryForm";
@@ -17,6 +19,7 @@ const ERROR_MESSAGE = "Something went wrong";
 
 const PatientPage = () => {
   const [patient, setPatient] = useState<Patient | undefined>(undefined);
+  const [diagnosisCodesData, setDiagnosisCodesData] = useState<Diagnosis[]>([]);
   const [error, setError] = useState<string | undefined>("");
   const match = useMatch("/:id");
 
@@ -32,6 +35,16 @@ const PatientPage = () => {
       patientService
         .getPatient(match.params.id)
         .then((fetched) => setPatient(fetched))
+        .catch((error: unknown) => {
+          if (axios.isAxiosError(error) && error.response) {
+            showError(error.response.data.error);
+          } else {
+            showError(ERROR_MESSAGE);
+          }
+        });
+      diagnosesService
+        .getAll()
+        .then((diagnoses) => setDiagnosisCodesData(diagnoses))
         .catch((error: unknown) => {
           if (axios.isAxiosError(error) && error.response) {
             showError(error.response.data.error);
@@ -89,7 +102,7 @@ const PatientPage = () => {
       <div>Ssn: {patient.ssn}</div>
       <div>Occupation: {patient.occupation}</div>
       <ErrorNotification error={error} />
-      <EntryForm onSubmit={addEntry} />
+      <EntryForm diagnosisCodesData={diagnosisCodesData} onSubmit={addEntry} />
       <EntriesList entries={patient.entries} />
     </div>
   ) : (

@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Grid } from "@mui/material";
-import type { EntryType, NewEntry } from "../../../types";
+import type { Diagnosis, EntryType, NewEntry } from "../../../types";
 import HealthcheckEntryForm from "./HealthcheckEntryForm";
 import { RefObject, SyntheticEvent, useRef, useState } from "react";
 import { assertNever } from "../../common/utils";
@@ -7,23 +7,27 @@ import HospitalEntryForm from "./HospitalEntryForm";
 import OccupationalHealthcareEntryForm from "./OccupartionalHealthcareEntryForm";
 
 interface EntryFormProps {
+  diagnosisCodesData: Diagnosis[];
   onSubmit: (entry: NewEntry) => Promise<boolean>;
 }
 
 export interface EntryFormRef {
+  validate: () => boolean;
   createNewEntry: () => NewEntry;
   resetFields: () => void;
 }
 
-const EntryForm = ({ onSubmit }: EntryFormProps) => {
+const EntryForm = ({ diagnosisCodesData, onSubmit }: EntryFormProps) => {
   const [entryType, setEntryType] = useState<EntryType>("HealthCheck");
   const entryFormRef: RefObject<EntryFormRef> = useRef<EntryFormRef>(null);
 
   const addEntry = async (event: SyntheticEvent) => {
     event.preventDefault();
     if (entryFormRef?.current) {
-      const result = await onSubmit(entryFormRef?.current?.createNewEntry());
-      if (result) entryFormRef.current.resetFields();
+      if (entryFormRef?.current?.validate()) {
+        const result = await onSubmit(entryFormRef?.current?.createNewEntry());
+        if (result) entryFormRef.current.resetFields();
+      }
     }
   };
 
@@ -36,11 +40,26 @@ const EntryForm = ({ onSubmit }: EntryFormProps) => {
   const getEntryForm = () => {
     switch (entryType) {
       case "HealthCheck":
-        return <HealthcheckEntryForm ref={entryFormRef} />;
+        return (
+          <HealthcheckEntryForm
+            diagnosisCodesData={diagnosisCodesData}
+            ref={entryFormRef}
+          />
+        );
       case "Hospital":
-        return <HospitalEntryForm ref={entryFormRef} />;
+        return (
+          <HospitalEntryForm
+            diagnosisCodesData={diagnosisCodesData}
+            ref={entryFormRef}
+          />
+        );
       case "OccupationalHealthcare":
-        return <OccupationalHealthcareEntryForm ref={entryFormRef} />;
+        return (
+          <OccupationalHealthcareEntryForm
+            diagnosisCodesData={diagnosisCodesData}
+            ref={entryFormRef}
+          />
+        );
       default:
         assertNever(entryType);
     }
