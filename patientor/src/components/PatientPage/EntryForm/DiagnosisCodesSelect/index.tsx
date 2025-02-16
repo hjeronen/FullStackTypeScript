@@ -1,7 +1,7 @@
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
+import Select, { type SelectChangeEvent } from "@mui/material/Select";
 import { Diagnosis } from "../../../../types";
 import Stack from "@mui/material/Stack";
 import Chip from "@mui/material/Chip";
@@ -9,18 +9,20 @@ import CancelIcon from "@mui/icons-material/Cancel";
 
 interface DiagnosisCodesSelectProps {
   diagnosisCodesData: Diagnosis[];
-  value: string[];
+  selected: string[];
   onChange: (codes: string[]) => void;
 }
 
 const DiagnosisCodesSelect = ({
   diagnosisCodesData,
-  value,
+  selected,
   onChange,
 }: DiagnosisCodesSelectProps) => {
-  const handleChange = (event: any) => {
-    event.preventDefault();
-    onChange(event.target.value);
+  const handleChange = (event: SelectChangeEvent<typeof selected>) => {
+    const {
+      target: { value },
+    } = event;
+    onChange(typeof value === "string" ? value.split(",") : value);
   };
   return (
     <div>
@@ -30,7 +32,7 @@ const DiagnosisCodesSelect = ({
           labelId='diagnosis-codes-select'
           id='diagnosis-codes'
           multiple
-          value={value}
+          value={selected}
           onChange={handleChange}
           label='Diagnosis codes'
           renderValue={(selected) => (

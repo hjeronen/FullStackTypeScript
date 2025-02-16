@@ -94,7 +94,7 @@ const HealthcheckEntryForm = forwardRef<
       />
       <DiagnosisCodesSelect
         diagnosisCodesData={diagnosisCodesData}
-        value={diagnosisCodes}
+        selected={diagnosisCodes}
         onChange={setDiagnosisCodes}
       />
     </div>

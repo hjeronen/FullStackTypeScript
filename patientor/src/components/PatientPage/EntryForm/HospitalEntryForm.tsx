@@ -89,7 +89,7 @@ const HospitalEntryForm = forwardRef<EntryFormRef, HospitalEntryFormProps>(
         />
         <DiagnosisCodesSelect
           diagnosisCodesData={diagnosisCodesData}
-          value={diagnosisCodes}
+          selected={diagnosisCodes}
           onChange={setDiagnosisCodes}
         />
       </div>
